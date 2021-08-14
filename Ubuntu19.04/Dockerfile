@@ -1,27 +1,9 @@
-FROM ubuntu:18.10
-
-# # update apt/pip source
-# RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list\
-# 	&& apt-get update \
-# 	&& apt-get install -y apt-transport-https \
-# 	&& apt-get install -y --reinstall ca-certificates \
-# 	&& cp /etc/apt/sources.list /etc/apt/sources.list.bak \
-# 	&& echo '' > /etc/apt/sources.list \
-# 	&& echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ cosmic main restricted universe multiverse" > /etc/apt/sources.list \
-# 	&& echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ cosmic-updates main restricted universe multiverse" >> /etc/apt/sources.list \
-# 	&& echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ cosmic-backports main restricted universe multiverse" >> /etc/apt/sources.list \
-# 	&& echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ cosmic-security main restricted universe multiverse" >> /etc/apt/sources.list \
-# 	&& apt-get update \
-# 	&& apt-get -y dist-upgrade \
-# 	&& mkdir /root/.pip \
-# 	&& touch /root/.pip/pip.conf \
-# 	&& echo "[global]\nindex-url = https://pypi.tuna.tsinghua.edu.cn/simple" > /root/.pip/pip.conf
-
+from ubuntu:19.04
 
 RUN cp /etc/apt/sources.list /etc/apt/sources.list.bak \
 	&& sed -i -r 's/([a-z]{2}\.)?archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
 	&& sed -i -r 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
-	&& apt-get update \
+    && apt-get update \
 	&& apt-get -y dist-upgrade
 
 # install base program
@@ -54,3 +36,9 @@ RUN git clone https://github.com/longld/peda /root/peda \
 RUN dpkg --add-architecture i386 \ 
 	&& apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1
+
+# # install one_gadget and 32bit env
+# RUN dpkg --add-architecture i386 \ 
+# 	&& apt-get update \
+# 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y ruby gem libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 \
+# 	&& gem install one_gadget
